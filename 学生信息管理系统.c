@@ -1,11 +1,11 @@
-﻿/*
+/*
 
 新垣绫濑的荷包蛋
 GitHub:https://github.com/AyaseLL6/stuManager
 Email:f68886@88.com
 2024.4.25
 
-第一次使用先选择教师身份录入学生
+第一次使用先选择教师身份录入学生或者选择添加演示用默认学生功能
 教师账号teacher
 教师密码password
 
@@ -92,7 +92,7 @@ void loadFromFile(StudentList* list) {
     FILE* file = fopen("students.dat", "rb");
     // 以二进制读模式(rb)打开students.dat文件
     if (file == NULL) {
-        printf("无法找到学生数据,请先选择教师身份并录入学生\n");
+        printf("无法找到学生数据,请先选择教师身份并录入学生或者选择添加演示用默认学生功能\n");
         return;
     }
     Student student;
@@ -398,10 +398,11 @@ void teacherMenu(StudentList* list) {
         printf("4. 查找指定学生\n");
         printf("5. 按学号/成绩查看\n");
         printf("6. 按单科成绩查看\n");
-        printf("7. 返回身份选择界面\n");
+        printf("7. 添加演示用默认学生\n");
+        printf("8. 返回身份选择界面\n");
         printf("输入您的选择: ");
         scanf("%d", &choice);
-        if (choice == 7) {
+        if (choice == 8) {
             system("cls");
             break;
         }
@@ -421,6 +422,7 @@ void teacherMenu(StudentList* list) {
             // 创建新的学生节点
             addStudent(list, student);
             // 在链表头部插入新节点
+            printf("录入成功\n");
             break;
         case 2:
             // 修改原有学生
@@ -433,6 +435,7 @@ void teacherMenu(StudentList* list) {
             clearInputBuffer();
             modifyStudentScores(list, id, scores);
             // 修改原有特定学生的分数
+            printf("修改成功\n");
             break;
         case 3:
             // 删除原有学生
@@ -441,6 +444,7 @@ void teacherMenu(StudentList* list) {
             clearInputBuffer();
             deleteStudent(list, id);
             // 删除指定学生
+            printf("删除成功\n");
             break;
         case 4:
             // 查找指定学号学生
@@ -492,6 +496,19 @@ void teacherMenu(StudentList* list) {
                 printf("无效科目选择\n");
             }
             break;
+        case 7:
+            int s1[] = {9,10,10,10,10};
+            student = createStudent("1", "a", s1);
+            addStudent(list, student);
+            int s2[] = { 12,10,9,10,9 };
+            student = createStudent("2", "b", s2);
+            addStudent(list, student);
+            int s3[] = { 11,11,11,11,11 };
+            student = createStudent("3", "c", s3);
+            addStudent(list, student);
+            printf("添加成功\n");
+            clearInputBuffer();
+            break;
         }
         waitClearScreen();
         // 等待下一步操作并清屏
@@ -504,7 +521,7 @@ void studentMenu(StudentList* list) {
         printf("学生主系统:\n");
         printf("1. 查询我的分数\n");
         printf("2. 查询我的排名(按总成绩)\n");
-        printf("3. 退出\n");
+        printf("3. 返回身份选择界面\\n");
         printf("输入您的选择: ");
         scanf("%d", &choice);
         if (choice == 3) {
@@ -561,7 +578,7 @@ int main() {
         printf("身份选择:\n");
         printf("1. 教师身份\n");
         printf("2. 学生身份\n");
-        printf("3. 退出\n");
+        printf("3. 退出系统\n");
         printf("输入您的选择: ");
         scanf("%d", &userType);
         if (userType == 3) break;
