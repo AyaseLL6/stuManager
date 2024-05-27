@@ -537,7 +537,7 @@ void studentMenu(StudentList* list) {
         printf("学生主系统:\n");
         printf("1. 查询我的分数\n");
         printf("2. 查询我的排名(按总成绩)\n");
-        printf("3. 返回身份选择界面\\n");
+        printf("3. 返回身份选择界面\n");
         printf("输入您的选择: ");
         scanf("%d", &choice);
         if (choice == 3) {
