@@ -136,23 +136,34 @@ void addStudent(StudentList* list, Student* student) {
     // 保存链表数据到文件中
 }
 
+
 void printStudent(Student* student) {
     // 打印当前节点的学生信息
-    printf("| %-10s | %-20s |", student->id, student->name);
+    printf("| %-18s | %-30s |", student->id, student->name);
     for (int i = 0; i < MAX_SUBJECTS; i++) {
-        printf(" %-5d |", student->scores[i]);
+        printf(" %-6d |", student->scores[i]);
     }
-    printf(" %-5d |\n", student->total_score);
+    printf(" %-6d |\n", student->total_score);
 }
+
 
 void printHeader() {
     // 打印学生信息表格头部
-    printf("| %-10s | %-20s |", "学号", "姓名");
+    printf("+--------------------+--------------------------------+");
     for (int i = 0; i < MAX_SUBJECTS; i++) {
-        printf(" 科目%d |", i + 1);
+        printf("--------+");
     }
-    printf(" 总分 |\n");
-    printf("-------------------------------------------------------------------------------\n");
+    printf("--------+\n");
+    printf("| %-18s | %-30s |", "学号", "姓名");
+    for (int i = 0; i < MAX_SUBJECTS; i++) {
+        printf(" 科目%-3d |", i + 1);
+    }
+    printf(" 总分  |\n");
+    printf("+--------------------+--------------------------------+");
+    for (int i = 0; i < MAX_SUBJECTS; i++) {
+        printf("--------+");
+    }
+    printf("--------+\n");
 }
 
 void printStudents(StudentList* list) {
@@ -168,6 +179,11 @@ void printStudents(StudentList* list) {
         current = current->next;
         // 将current移动到下一个节点
     }
+    printf("+--------------------+--------------------------------+");
+    for (int i = 0; i < MAX_SUBJECTS; i++) {
+        printf("--------+");
+    }
+    printf("--------+\n");
 }
 
 Student* findStudentById(StudentList* list, const char* id) {
