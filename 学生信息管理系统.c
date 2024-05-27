@@ -3,7 +3,7 @@
 新垣绫濑的荷包蛋
 GitHub:https://github.com/AyaseLL6/stuManager
 Email:f68886@88.com
-2024.4.25
+2024.5.27
 
 第一次使用先选择教师身份录入学生或者选择添加演示用默认学生功能
 教师账号teacher
@@ -16,6 +16,7 @@ Email:f68886@88.com
 
 #include <stdio.h>
 #include <stdlib.h>
+//引入qsort排序函数(快速排序)
 #include <string.h>
 //导入头文件
 
@@ -32,6 +33,14 @@ Email:f68886@88.com
 int globalSubjectIndex;
 // 全局变量，用于存储当前排序所依据的科目索引
 
+/*
+加上typedf可以省去struct关键字，例如:
+typedef struct Student
+{
+    int a;
+}Stu;
+如果没有typedef就必须用struct Student stu1;来声明，有的话可以直接Stu stu1;
+*/
 
 typedef struct Student {
     char id[MAX_LENGTH];
@@ -135,7 +144,6 @@ void addStudent(StudentList* list, Student* student) {
     saveToFile(list);
     // 保存链表数据到文件中
 }
-
 
 void printStudent(Student* student) {
     // 打印当前节点的学生信息
@@ -390,6 +398,85 @@ void sortStudentsBySubject(StudentList* list, int subjectIndex) {
     // 释放用于存储学生指针的数组内存
 }
 
+
+
+void findStudentsByName(StudentList* list, const char* name) {
+    int found = 0;
+    for (Student* curr = list->head; curr != NULL; curr = curr->next) {
+        if (strstr(curr->name, name) != NULL) {
+            if (!found) {
+                printHeader();
+            }
+            printStudent(curr);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("无法找到学生 \"%s\"\n", name);
+    }
+}
+
+void findStudentsByScoreRange(StudentList* list, int a, int b) {
+    int found = 0;
+    for (Student* curr = list->head; curr != NULL; curr = curr->next) {
+        if (curr->total_score >= a && curr->total_score <= b) {
+            if (!found) {
+                printHeader();
+            }
+            printStudent(curr);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("总成绩中无法找到在 %d-%d 分段的学生\n", a, b);
+    }
+}
+
+void findStudentsBySubjectScoreRange(StudentList* list, int index, int a, int b) {
+    int found = 0;
+    if (index < 1 || index > MAX_SUBJECTS) {
+        printf("错误的科目索引%d (索引范围1-5)\n", index);
+        return;
+    }
+    for (Student* curr = list->head; curr != NULL; curr = curr->next) {
+        if (curr->scores[index - 1] >= a && curr->scores[index - 1] <= b) {
+            if (!found) {
+                printHeader();
+            }
+            printStudent(curr);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("在科目%d 中无法找到在 %d-%d 分段的学生\n", index, a, b);
+    }
+}
+
+
+void handleCommand(StudentList* list, char* command) {
+    if (strncmp(command, "find by name ", 13) == 0) {
+        char name[MAX_NAME];
+        sscanf(command + 13, "%s", name);
+        findStudentsByName(list, name);
+    }
+    else if (strncmp(command, "find by score ", 14) == 0) {
+        int a, b;
+        sscanf(command + 14, "%d-%d", &a, &b);
+        findStudentsByScoreRange(list, a, b);
+    }
+    else if (strncmp(command, "find by subject ", 16) == 0) {
+        int index, a, b;
+        sscanf(command + 16, "%d %d-%d", &index, &a, &b);
+        findStudentsBySubjectScoreRange(list, index, a, b);
+    }
+    else {
+        printf("错误指令\n");
+    }
+}
+
+
+
+
 void clearInputBuffer() {
     // 清空输入缓冲区
     while (getchar() != '\n');
@@ -407,24 +494,31 @@ void waitClearScreen() {
 void teacherMenu(StudentList* list) {
     int choice;
     while (1) {
-        printf("教师主系统:\n");
-        printf("1. 录入学生成绩\n");
-        printf("2. 修改学生成绩\n");
-        printf("3. 删除指定学生\n");
-        printf("4. 查找指定学生\n");
-        printf("5. 按学号/成绩查看\n");
-        printf("6. 按单科成绩查看\n");
-        printf("7. 添加演示用默认学生\n");
-        printf("8. 返回身份选择界面\n");
-        printf("输入您的选择: ");
+    printf("教师主系统:\n");
+    printf("1. 录入学生成绩\n");
+    printf("2. 修改学生成绩\n");
+    printf("3. 删除指定学生\n");
+    printf("4. 查找指定学生\n");
+    printf("5. 按学号/成绩查看\n");
+    printf("6. 按单科成绩查看\n");
+    printf("7. 添加演示用默认学生\n");
+    printf("8. 指令模糊匹配学生\n");
+    printf("9. 返回身份选择界面\n");
+    printf("\n模糊查询指令使用帮助:\n1.find by name 坤  显示姓名中包含'坤'的学生\n2.find by score 300-350  显示总成绩在300-350区间的学生\n3.find by subject 5  60-80  显示指定科目(1 - 5)的成绩在60-80区间的学生");
+    printf("\n\n输入您的操作选择: ");
         scanf("%d", &choice);
-        if (choice == 8) {
+        if (choice == 9) {
             system("cls");
             break;
         }
         char id[20], name[MAX_NAME];
         int scores[MAX_SUBJECTS];
+        char command[256];
         Student* student;
+        int s1[] = { 65,65,70,68,62 };
+        int s2[] = { 75,69,77,82,70 };
+        int s3[] = { 70,71,69,68,65 };
+        int s4[] = { 100,110,95,108,107 };
         switch (choice) {
         case 1:
             // 录入新学生
@@ -513,17 +607,26 @@ void teacherMenu(StudentList* list) {
             }
             break;
         case 7:
-            int s1[] = {9,10,10,10,10};
-            student = createStudent("1", "a", s1);
+            
+            student = createStudent("a", "坤哥", s1);
             addStudent(list, student);
-            int s2[] = { 12,10,9,10,9 };
-            student = createStudent("2", "b", s2);
+            student = createStudent("b","熊大",  s2);
             addStudent(list, student);
-            int s3[] = { 11,11,11,11,11 };
-            student = createStudent("3", "c", s3);
+            student = createStudent("c","熊二", s3);
+            addStudent(list, student);
+            student = createStudent("c","新垣绫濑", s3);
             addStudent(list, student);
             printf("添加成功\n");
             clearInputBuffer();
+            break;
+        case 8:
+            clearInputBuffer();
+                printf("输入指令: ");
+                if (!fgets(command, sizeof(command), stdin)) {
+                    break;
+                }
+                command[strcspn(command, "\n")] = 0;
+                handleCommand(list, command);
             break;
         }
         waitClearScreen();
