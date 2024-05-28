@@ -403,7 +403,9 @@ void sortStudentsBySubject(StudentList* list, int subjectIndex) {
 void findStudentsByName(StudentList* list, const char* name) {
     int found = 0;
     for (Student* curr = list->head; curr != NULL; curr = curr->next) {
+        // 从学生列表头部开始遍历每个学生节点，直到遍历完整个列表，每次迭代将curr指向下一个学生节点
         if (strstr(curr->name, name) != NULL) {
+            // 是否匹配子字符串
             if (!found) {
                 printHeader();
             }
@@ -420,6 +422,7 @@ void findStudentsByScoreRange(StudentList* list, int a, int b) {
     int found = 0;
     for (Student* curr = list->head; curr != NULL; curr = curr->next) {
         if (curr->total_score >= a && curr->total_score <= b) {
+            // 是否符合分数区间
             if (!found) {
                 printHeader();
             }
@@ -440,6 +443,7 @@ void findStudentsBySubjectScoreRange(StudentList* list, int index, int a, int b)
     }
     for (Student* curr = list->head; curr != NULL; curr = curr->next) {
         if (curr->scores[index - 1] >= a && curr->scores[index - 1] <= b) {
+            // 是否符合分数区间
             if (!found) {
                 printHeader();
             }
@@ -623,10 +627,13 @@ void teacherMenu(StudentList* list) {
             clearInputBuffer();
                 printf("输入指令: ");
                 if (!fgets(command, sizeof(command), stdin)) {
+                    // 读取用户输入的指令，存储在command数组中,第二个参数指定了读取的最大字符数,即数组command的大小
                     break;
                 }
                 command[strcspn(command, "\n")] = 0;
+            // 去除用户输入中的换行符，strcspn函数找到数组中第一个换行符的位置，并将其替换为字符串结束符\0，从而截断输入的指令字符串
                 handleCommand(list, command);
+            // 处理指令
             break;
         }
         waitClearScreen();
