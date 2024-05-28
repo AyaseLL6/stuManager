@@ -612,13 +612,13 @@ void teacherMenu(StudentList* list) {
             break;
         case 7:
             
-            student = createStudent("a", "坤哥", s1);
+            student = createStudent("1", "坤哥", s1);
             addStudent(list, student);
-            student = createStudent("b","熊大",  s2);
+            student = createStudent("2","熊大",  s2);
             addStudent(list, student);
-            student = createStudent("c","熊二", s3);
+            student = createStudent("3","熊二", s3);
             addStudent(list, student);
-            student = createStudent("c","新垣绫濑", s3);
+            student = createStudent("4","新垣绫濑", s3);
             addStudent(list, student);
             printf("添加成功\n");
             clearInputBuffer();
