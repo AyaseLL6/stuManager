@@ -618,7 +618,7 @@ void teacherMenu(StudentList* list) {
             addStudent(list, student);
             student = createStudent("3","熊二", s3);
             addStudent(list, student);
-            student = createStudent("4","新垣绫濑", s3);
+            student = createStudent("4","新垣绫濑", s4);
             addStudent(list, student);
             printf("添加成功\n");
             clearInputBuffer();
