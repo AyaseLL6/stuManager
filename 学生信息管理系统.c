@@ -528,20 +528,18 @@ void teacherMenu(StudentList* list) {
             // 录入新学生
             printf("输入学生学号 姓名 成绩(5科，空格分开): ");
             scanf("%s %s", id, name); 
-            clearInputBuffer();
             student = findStudentById(list, id);
             if (student) {
                printf("该学号已绑定学生，请更换后重新录入\n");
+            }else {
+                for (int i = 0; i < MAX_SUBJECTS; i++) {
+                    scanf("%d", &scores[i]);
             }
-            else {
-              for (int i = 0; i < MAX_SUBJECTS; i++) {
-                  scanf("%d", &scores[i]);
-            }
-            student = creatStudent(id, name, scores);
+            clearInputBuffer();
+            student = createStudent(id, name, scores);
             addStudent(list, student);
             printf("录入成功\n");
-}
-break;
+            }
             break;
         case 2:
             // 修改原有学生
